@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria de Imagens</title>
+    <style>
+        /* Estilos simples para exibir as imagens */
+        #gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .image-item {
+            width: 200px;
+        }
+        .image-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Galeria de Imagens</h1>
+    <div id="gallery"></div>
+
+    <script>
+        // Função para buscar e exibir as imagens
+        async function fetchImages() {
+            try {
+                const response = await fetch('http://localhost:4000/pictures');
+                const images = await response.json();
+
+                const gallery = document.getElementById('gallery');
+                gallery.innerHTML = ''; // Limpa a galeria antes de renderizar
+
+                images.forEach(image => {
+                    const imageItem = document.createElement('div');
+                    imageItem.classList.add('image-item');
+
+                    const img = document.createElement('img');
+                    // Corrige as barras invertidas no caminho da imagem
+                    img.src = `http://localhost:4000/${image.src.replace(/\\/g, '/')}`;
+                    img.alt = image.name;
+
+                    imageItem.appendChild(img);
+                    gallery.appendChild(imageItem);
+                });
+            } catch (error) {
+                console.error('Erro ao buscar imagens:', error);
+            }
+        }
+
+        // Carrega as imagens quando a página é carregada
+        window.onload = fetchImages;
+    </script>
+</body>
+</html>
